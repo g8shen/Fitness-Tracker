@@ -6,35 +6,45 @@
 <app-header></app-header>
 
 <div class="tab">
-    <button (click)="setTab('Today')" class="tablinks" style="margin-left: 20vw">Today</button>
-    <button (click)="setTab('Overview')" class="tablinks">Overview</button>
-    <button (click)="setTab('Food')" class="tablinks">Food</button>
+    <button *ngIf="today" (click)="setTab('Today')" class="tablinks active" style="margin-left: 20vw">Today</button>
+    <button *ngIf="!today" (click)="setTab('Today')" class="tablinks" style="margin-left: 20vw">Today</button>
+
+    <button *ngIf="overview" (click)="setTab('Overview')" class="tablinks active">Overview</button>
+    <button *ngIf="!overview" (click)="setTab('Overview')" class="tablinks">Overview</button>
+
+    <button *ngIf="food" (click)="setTab('Food')" class="tablinks active">Food</button>
+    <button *ngIf="!food" (click)="setTab('Food')" class="tablinks">Food</button>
 
 </div>
 
 <!--TODAY TAB-->
 <div *ngIf="today"> 
-    <div class="todayCards"> 
+    <div class="todayTab"> 
     <!--WEIGHT CARD-->
     <div class="card">
-        <div class="card-header">Today is {{formattedDate}}</div>
+        <div class="card-header">Today is {{formattedDate}}</div> 
         <div class="card-body">Weight:        
-            <input [(ngModel)]="day.WEIGHT" type="text" (input)="console(day.WEIGHT)">              
-            <button (click)="saveWeight()"> Save </button>
-            Workout:    
-            <select [(ngModel)]="day.WORKOUT" > 
+            <input class="weightInput myInput" *ngIf="editWeightText =='Save'" [(ngModel)]="day.WEIGHT" type="text">     
+            <span *ngIf="editWeightText == 'Edit'"> {{day.WEIGHT}} </span>
+         
+            <button class="myButton" style="margin-left: 5px" (click)="saveWeight(formattedDate, day)"> {{editWeightText}} </button>
+           
+            <!--select [(ngModel)]="day.WORKOUT" > 
             <option> Rest</option>
             <option> Push </option>
             <option> Pull </option>
             <option> Legs </option>
-            </select>
-
-
+            </select-->
       </div>
     </div>
     <!--FOOD CARD-->
-    <div class="card">
-        <div class="card-header">Food</div>
+    <div class="card" style="margin-top: 25px">
+        <div class="card-header"> 
+            <select>
+                <option>Food</option>
+                <option>Workout</option>
+            </select>  
+        </div>
     <div class="foodCards"> 
         <!--ADD SUBCARD-->
         <div class="card">
@@ -44,8 +54,7 @@
                     <option> New </option>
                     <option> Existing </option>
                 </select>
-                <span *ngIf="addFoodMode=='Existing'">Search Existing<input [(ngModel)]="filterInput" (input)="foodTable.filterGlobal(filterInput, 'contains');console(filterInput)"></span>
-
+                Total Calories: {{day.CALORIES_TOTAL}}
             </div>
             <!--ADDING NEW-->
             <div *ngIf="addFoodMode=='New'"class="card-body"> 
@@ -57,57 +66,82 @@
                 <option> Snacks </option>
                 </select>
 
-                Name: <input [(ngModel)]="foodObject.NAME" type="text"> 
-                Calories: <input [(ngModel)]="foodObject.CALORIES" type="text"> 
-                Protein: <input [(ngModel)]="foodObject.PROTEIN" type="text">
-                <button (click)="addFood()"> Add </button>
+                Name: <input class="myInput" [(ngModel)]="foodObject.NAME" type="text"> 
+                Calories: <input class="myInput" [(ngModel)]="foodObject.CALORIES" type="text"> 
+                Protein: <input class="myInput" [(ngModel)]="foodObject.PROTEIN" type="text">
+                <button class="myButton" style="margin-left: 10px" (click)="addFood(false)"> Add </button> 
             </div>
             <!--ADDING EXISTING-->
             <div *ngIf="addFoodMode=='Existing'"class="card-body"> 
-                <p-table #foodTable [value]="foodTableValues" [globalFilterFields]="['NAME', 'CALORIES', 'PROTEIN']">
+                <span *ngIf="addFoodMode=='Existing'">Search Existing <input class="myInput" style="margin-left: 5px; margin-bottom: 10px" [(ngModel)]="filterInput" (input)="foodTable.filterGlobal(filterInput, 'contains')"></span>
+                Meal: 
+                <select [(ngModel)]="foodObject.MEAL" > 
+                <option> Breakfast</option>
+                <option> Lunch </option>
+                <option> Dinner </option>
+                <option> Snacks </option>
+                </select>
+                <p-table #foodTable [value]="foodTableValues" [globalFilterFields]="['NAME', 'CALORIES', 'PROTEIN']" >
                 <ng-template pTemplate="header"> 
+                    <th *ngFor="let col of foodTableCols | slice:0:4; let i=index"
+                    [ngStyle]="{'width': col.width}" [pSortableColumn]="col.searchfield" class="tableHeader"> 
+                    {{col.header}}
+                    <p-sortIcon [field]="col.searchfield"></p-sortIcon>
+                </th>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData>
                     <tr>
-                    <td>
-                        {{rowData.NAME}}, {{rowData.CALORIES}}, {{rowData.PROTEIN}}
-                    </td>
-                    </tr>
-            
+                        <td *ngFor="let col of foodTableCols | slice:0:4; let i = index" [ngStyle]="{'width': col.width}" class="tableRow"> 
+                        <span *ngIf="i!=3">{{rowData[col.field]}}</span>
+                        <span *ngIf="i==3"> <input class="tableFilterInput" [(ngModel)]="rowData.WEIGHT"> </span>
+
+                        </td>
+                        
+                        <td> <button class="myButton" style="margin-left:5px" (click)="addFoodExisting(rowData.NAME, rowData.CALORIES, rowData.PROTEIN, rowData.MEAL, rowData.WEIGHT)">Add</button></td>
+                        </tr>
             </ng-template>
-                </p-table>
+                </p-table> 
             </div>
         </div>
 
         <!--BREAKFAST SUBCARD-->
         <div *ngIf="day.food.BREAKFAST.length!=0" class="card">
             <div class="card-header">Breakfast</div>
-            <div *ngFor="let food of BREAKFAST; let i = index"> 
             <div class="card-body"> 
+            <div *ngFor="let food of BREAKFAST; let i = index"> 
                 <span *ngIf="food.EDIT==false"> 
-                Name: {{food.NAME}}
-                Calories: {{food.CALORIES}}
-                Protein: {{food.PROTEIN}}
+                <span>Name: {{food.NAME}} </span>
+                <span class="calorieInput">Calories: {{food.CALORIES}}</span>
+                <span class="protienInput"> Protein: {{food.PROTEIN}}</span>
+                <button class="buttonInput myButton" (click)="toggleFoodEdit(BREAKFAST, i)"> Edit </button>
                 </span>
                 <span *ngIf="food.EDIT==true"> 
-                Name: <input [(ngModel)]="food.NAME" type="text"> 
-                Calories: <input [(ngModel)]="food.CALORIES" type="text"> 
-                Protein: <input [(ngModel)]="food.PROTEIN" type="text">
+                <span> Name: <input class="inputTextboxLarge" [(ngModel)]="food.NAME" type="text"></span>
+                <span class="calorieInput">Calories: <input class="inputTextboxLarge" [(ngModel)]="food.CALORIES" type="text"></span>
+                <span class="protienInput">Protein: <input class="inputTextboxLarge" [(ngModel)]="food.PROTEIN" type="text"></span>
+                <button class="buttonInput myButton" (click)="toggleFoodEdit(BREAKFAST, i)"> Save </button>
                 </span>
-                <button (click)="toggleEdit(BREAKFAST, i)"> {{editFoodText}} </button>
-            </div>
+                <hr >
         </div>
         </div>
-
+        </div>
         <!--LUNCH SUBCARD-->
         <div *ngIf="day.food.LUNCH.length!=0" class="card">
             <div class="card-header">Lunch</div>
-            <div *ngFor="let food of LUNCH"> 
+            <div *ngFor="let food of LUNCH; let i = index"> 
                 <div class="card-body"> 
-                    Name: <input [(ngModel)]="food.NAME" type="text"> 
-                    Calories: <input [(ngModel)]="food.CALORIES" type="text"> 
-                    Protein: <input [(ngModel)]="food.PROTEIN" type="text">
-                    <button> Edit </button>
+                    <span *ngIf="food.EDIT==false"> 
+                        <span>Name: {{food.NAME}} </span>
+                        <span class="calorieInput">Calories: {{food.CALORIES}}</span>
+                        <span class="protienInput"> Protein: {{food.PROTEIN}}</span>
+                        <button class="buttonInput myButton" (click)="toggleFoodEdit(LUNCH, i)"> Edit </button>
+                        </span>
+                        <span *ngIf="food.EDIT==true"> 
+                        <span> Name: <input class="inputTextboxLarge" [(ngModel)]="food.NAME" type="text"></span>
+                        <span class="calorieInput">Calories: <input class="inputTextboxLarge" [(ngModel)]="food.CALORIES" type="text"></span>
+                        <span class="protienInput">Protein: <input class="inputTextboxLarge" [(ngModel)]="food.PROTEIN" type="text"></span>
+                        <button class="buttonInput myButton" (click)="toggleFoodEdit(LUNCH, i)"> Save </button>
+                        </span>
                 </div>      
         </div>
         </div>
@@ -115,33 +149,45 @@
         <!--DINNER SUBCARD-->
         <div *ngIf="day.food.DINNER.length!=0" class="card">
             <div class="card-header">Dinner</div>
-            <div *ngFor="let food of DINNER"> 
+            <div *ngFor="let food of DINNER; let i = index"> 
                 <div class="card-body"> 
-                    Name: <input [(ngModel)]="food.NAME" type="text"> 
-                    Calories: <input [(ngModel)]="food.CALORIES" type="text"> 
-                    Protein: <input [(ngModel)]="food.PROTEIN" type="text">
-                    <button> Edit </button>
+                    <span *ngIf="food.EDIT==false"> 
+                        <span>Name: {{food.NAME}} </span>
+                        <span class="calorieInput">Calories: {{food.CALORIES}}</span>
+                        <span class="protienInput"> Protein: {{food.PROTEIN}}</span>
+                        <button class="buttonInput myButton" (click)="toggleFoodEdit(DINNER, i)"> Edit </button>
+                        </span>
+                        <span *ngIf="food.EDIT==true"> 
+                        <span> Name: <input class="inputTextboxLarge" [(ngModel)]="food.NAME" type="text"></span>
+                        <span class="calorieInput">Calories: <input class="inputTextboxLarge" [(ngModel)]="food.CALORIES" type="text"></span>
+                        <span class="protienInput">Protein: <input class="inputTextboxLarge" [(ngModel)]="food.PROTEIN" type="text"></span>
+                        <button class="buttonInput myButton" (click)="toggleFoodEdit(DINNER, i)"> Save </button>
+                        </span>
                 </div>    
         </div>
         </div>
         <!--SNACK SUBCARD-->
         <div *ngIf="day.food.SNACKS.length!=0" class="card">
             <div class="card-header">Snacks</div>
-            <div *ngFor="let food of SNACKS"> 
+            <div *ngFor="let food of SNACKS; let i = index"> 
                 <div class="card-body"> 
-                    Name: <input [(ngModel)]="food.NAME" type="text"> 
-                    Calories: <input [(ngModel)]="food.CALORIES" type="text"> 
-                    Protein: <input [(ngModel)]="food.PROTEIN" type="text">
-                    <button> Edit </button>
+                    <span *ngIf="food.EDIT==false"> 
+                        <span>Name: {{food.NAME}} </span>
+                        <span class="calorieInput">Calories: {{food.CALORIES}}</span>
+                        <span class="protienInput"> Protein: {{food.PROTEIN}}</span>
+                        <button class="buttonInput myButton" (click)="toggleFoodEdit(SNACKS, i)"> Edit </button>
+                        </span>
+                        <span *ngIf="food.EDIT==true"> 
+                        <span> Name: <input class="inputTextboxLarge" [(ngModel)]="food.NAME" type="text"></span>
+                        <span class="calorieInput">Calories: <input class="inputTextboxLarge" [(ngModel)]="food.CALORIES" type="text"></span>
+                        <span class="protienInput">Protein: <input class="inputTextboxLarge" [(ngModel)]="food.PROTEIN" type="text"></span>
+                        <button class="buttonInput myButton" (click)="toggleFoodEdit(SNACKS, i)"> Save </button>
+                        </span>
                 </div>       
         </div>
         </div>
-
-
         </div>
-
     <!--EXERCISE SUBCARD-->
-
     <!--div class="card">
         <div class="card-header">Exercise</div>
         <div class="card-body">Workout: <input [(ngModel)]="day.WEIGHT" type="text"></div>
@@ -151,65 +197,63 @@
     </div>
 </div>
 </div>
-
 <!--OVERVIEW TAB-->
 <div *ngIf="overview"> 
+    <div class="overviewTab">
     <p-table #dateTable [value]="dateTableValues">
         <ng-template pTemplate="header">
         <tr> 
         <th *ngFor="let col of dateTableCols | slice:0:19; let i=index"
-        [ngStyle]="{'width': col.width}" [pSortableColumn]="col.searchfield"> 
+        [ngStyle]="{'width': col.width}" [pSortableColumn]="col.searchfield" class="tableHeader"> 
         {{col.header}}
         <p-sortIcon [field]="col.searchfield"></p-sortIcon>
     </th>
     </tr>
     <tr>
-    <th *ngFor="let col of dateTableCols | slice:0:19; let i=index">
+    <th *ngFor="let col of dateTableCols | slice:0:19; let i=index" class="tableHeader">
         <input type="text" [(ngModel)]="col.inputValue"
-        (input)="dateTable.filter(col.inputValue, col.searchfield, col.filterMatchMode); console(col.inputValue)" 
+        (input)="dateTable.filter(col.inputValue, col.searchfield, col.filterMatchMode);" class="tableFilterInput"
        >
     </th>
-    
 </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowData>
         <tr>
-            <td *ngFor="let col of dateTableCols | slice:0:19; let i = index" [ngStyle]="{'width': col.width}"> 
-           {{rowData[col.field]}}
-            </td>
-            </tr>
-
-</ng-template>
-    </p-table></div>
-
-<div *ngIf="food"> 
-    <p-table #foodTable [value]="foodTableValues">
-        <ng-template pTemplate="header">
-        <tr> 
-        <th *ngFor="let col of foodTableCols | slice:0:3; let i=index"
-        [ngStyle]="{'width': col.width}" [pSortableColumn]="col.searchfield"> 
-        {{col.header}}
-        <p-sortIcon [field]="col.searchfield"></p-sortIcon>
-    </th>
-    </tr>
-    <tr>
-    <th *ngFor="let col of foodTableCols | slice:0:19; let i=index">
-        <input type="text" [(ngModel)]="col.inputValue"
-        (input)="foodTable.filter(col.inputValue, col.searchfield, col.filterMatchMode); console(col.inputValue)" 
-       >
-    </th>
-    
-</tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-rowData>
-        <tr>
-            <td *ngFor="let col of foodTableCols | slice:0:3; let i = index" [ngStyle]="{'width': col.width}"> 
+            <td *ngFor="let col of dateTableCols | slice:0:19; let i = index" [ngStyle]="{'width': col.width}" class="tableRow"> 
            {{rowData[col.field]}}
             </td>
             </tr>
 
 </ng-template>
     </p-table>
+</div>
+</div>
+<div *ngIf="food"> 
+    <div class="foodTab"> 
+    <p-table #foodTable [value]="foodTableValues">
+        <ng-template pTemplate="header">
+        <tr> 
+        <th *ngFor="let col of foodTableCols | slice:0:3; let i=index"
+        [ngStyle]="{'width': col.width}" [pSortableColumn]="col.searchfield" class="tableHeader"> 
+        {{col.header}}
+        <p-sortIcon [field]="col.searchfield"></p-sortIcon>
+    </th>
+    </tr>
+    <tr>
+    <th *ngFor="let col of foodTableCols | slice:0:3; let i=index" class="tableHeader">
+        <input type="text" [(ngModel)]="col.inputValue" (input)="foodTable.filter(col.inputValue, col.searchfield, col.filterMatchMode);" class="tableFilterInput">
+    </th>
+</tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData>
+        <tr>
+            <td *ngFor="let col of foodTableCols | slice:0:3; let i = index" [ngStyle]="{'width': col.width}" class="tableRow"> 
+           {{rowData[col.field]}}
+            </td>
+            </tr>
+</ng-template>
+    </p-table>
+</div>
 </div>
 
 

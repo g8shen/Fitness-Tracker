@@ -1,6 +1,5 @@
 .tab {
     overflow: hidden;
-    background-color: #f1f1f1;
   }
   
 .tab button {
@@ -12,15 +11,17 @@
     padding: 14px 16px;
     transition: 0.3s;
     font-size: 30px;
-    border: 1px solid #ccc;
+    background-color:rgb(85, 37, 134);
+    border: solid 10px white;
 }
   
 .tab button:hover {
-background-color: #ddd;
+    background-color: rgb(181, 137, 214);
+
 }
 
 .tab button.active {
-background-color: #ccc;
+    background-color: rgb(181, 137, 214) ;
 }
 
 .tabcontent {
@@ -32,14 +33,111 @@ border-top: none;
 
 .tablinks {
     width: 20vw;
+    color: white;
+}
+
+.card{
+    border: 0px
+}
+.card-header{
+    background-color: #804FB3;
+    color: white;
+    border: 0px
+}
+
+.card-body{
+    background-color: WhiteSmoke;
+    border: 0px
 }
 
 .foodCards{
     padding: 25px
 }
 
-.todayCards{
+.todayTab{
     padding-left: 10vw; 
     padding-right: 10vw; 
     padding-top: 25px
+}
+
+.overviewTab{
+    padding-left: 10vw; 
+    padding-right: 10vw; 
+    padding-top: 25px
+}
+
+.foodTab{
+    padding-left: 10vw; 
+    padding-right: 10vw; 
+    padding-top: 25px
+}
+
+.calorieInput{
+    position: absolute; 
+    left: 25%
+}
+
+.protienInput{
+    position: absolute; 
+    left: 50%
+}
+
+.buttonInput{
+    position: absolute; 
+    left: 75% 
+}
+
+.inputTextboxSmall{
+    width: 100px;
+    border-radius: 8px;
+    border: solid 2px rgb(85, 37, 134)
+
+}
+
+.inputTextboxLarge{
+    width: 200px;
+    border-radius: 8px;
+    border: solid 2px rgb(85, 37, 134)
+
+}
+
+.tableHeader{
+    padding:5px; 
+    border: 4px solid #804FB3; 
+    background-color: rgb(181, 137, 214);
+    color: rgb(85, 37, 134)
+}
+
+.tableRow{
+    padding:5px; 
+    border: 4px solid #804FB3; 
+    background-color: rgb(181, 137, 214);
+    color: white
+}
+
+.tableFilterInput{
+    background-color: #9969C7;
+    padding: 5px;
+    border:0px;
+    width: 100%;
+    color: white
+}
+
+.myButton{
+    background-color: #FFA500 ;
+    color: black;
+    border-radius: 8px;
+    border: solid #FFA500 
+}
+.myButtonWeight{
+    position:absolute;
+    left: 15%
+}
+.weightInput{
+    width: 100px
+}
+
+.myInput{
+    border-radius: 8px;
+    border: solid 2px rgb(85, 37, 134);
 }
