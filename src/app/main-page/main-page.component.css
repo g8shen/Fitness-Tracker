@@ -36,6 +36,44 @@ border-top: none;
     color: white;
 }
 
+.subTab {
+    overflow: hidden;
+  }
+  
+.subTab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 3.5px 4px;
+    transition: 0.3s;
+    font-size: 20px;
+    background-color:rgb(85, 37, 134);
+    border: solid 10px white;
+}
+  
+.subTab button:hover {
+    background-color: rgb(181, 137, 214);
+
+}
+
+.subTab button.active {
+    background-color: rgb(181, 137, 214) ;
+}
+
+.subTabcontent {
+display: none;
+padding: 3px 6px;
+border: 1px solid #ccc;
+border-top: none;
+}
+
+.subTablinks {
+    width: 20vw;
+    color: white;
+}
+
 .card{
     border: 0px
 }
@@ -98,7 +136,6 @@ border-top: none;
     width: 200px;
     border-radius: 8px;
     border: solid 2px rgb(85, 37, 134)
-
 }
 
 .tableHeader{
@@ -140,4 +177,9 @@ border-top: none;
 .myInput{
     border-radius: 8px;
     border: solid 2px rgb(85, 37, 134);
+}
+
+.chart{
+    display: flex;
+    justify-content: center;
 }

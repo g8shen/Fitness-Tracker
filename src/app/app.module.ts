@@ -8,6 +8,7 @@ import { HeaderComponent } from './header/header.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {ChartModule} from 'primeng/chart';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     OverlayPanelModule,
     BrowserAnimationsModule,
     TableModule,
+    ChartModule,
 
   ],
   providers: [],

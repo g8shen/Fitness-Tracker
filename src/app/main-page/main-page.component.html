@@ -200,6 +200,20 @@
 <!--OVERVIEW TAB-->
 <div *ngIf="overview"> 
     <div class="overviewTab">
+    
+    <div class="subTab"> 
+    <button *ngIf="table" (click)="setSubTab('table')" class="subTablinks active" style="margin-left: 20vw">Table</button>
+    <button *ngIf="!table" (click)="setSubTab('table')" class="subTablinks" style="margin-left: 20vw">Table</button>
+
+    <button *ngIf="chart" (click)="setSubTab('chart')" class="subTablinks active">Chart</button>
+    <button *ngIf="!chart" (click)="setSubTab('chart')" class="subTablinks">Chart</button>
+    </div>
+
+    <div *ngIf="chart" class="chart"> 
+    <p-chart type="line" [data]="chartData" [options]="multiAxisOptions" width="500px" height="500px" ></p-chart>
+    </div>
+
+    <div *ngIf="table">
     <p-table #dateTable [value]="dateTableValues">
         <ng-template pTemplate="header">
         <tr> 
@@ -207,29 +221,39 @@
         [ngStyle]="{'width': col.width}" [pSortableColumn]="col.searchfield" class="tableHeader"> 
         {{col.header}}
         <p-sortIcon [field]="col.searchfield"></p-sortIcon>
-    </th>
-    </tr>
-    <tr>
-    <th *ngFor="let col of dateTableCols | slice:0:19; let i=index" class="tableHeader">
-        <input type="text" [(ngModel)]="col.inputValue"
-        (input)="dateTable.filter(col.inputValue, col.searchfield, col.filterMatchMode);" class="tableFilterInput"
-       >
-    </th>
-</tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-rowData>
+        </th>
+        </tr>
         <tr>
+        <th *ngFor="let col of dateTableCols | slice:0:19; let i=index" class="tableHeader">
+        <input type="text" [(ngModel)]="col.inputValue"
+        (input)="dateTable.filter(col.inputValue, col.searchfield, col.filterMatchMode);" class="tableFilterInput">
+        </th>
+        </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData>
+            <tr>
             <td *ngFor="let col of dateTableCols | slice:0:19; let i = index" [ngStyle]="{'width': col.width}" class="tableRow"> 
            {{rowData[col.field]}}
             </td>
             </tr>
-
-</ng-template>
+        </ng-template>
     </p-table>
 </div>
 </div>
+
+
+</div>
 <div *ngIf="food"> 
     <div class="foodTab"> 
+
+    <div class="subTab"> 
+        <button *ngIf="existing" (click)="setSubTab('existing')" class="subTablinks active" style="margin-left: 20vw">Existing</button>
+        <button *ngIf="!existing" (click)="setSubTab('existing')" class="subTablinks" style="margin-left: 20vw">Existing</button>
+
+        <button *ngIf="new" (click)="setSubTab('new')" class="subTablinks active">New</button>
+        <button *ngIf="!new" (click)="setSubTab('new')" class="subTablinks">New</button>
+    </div>
+    <div *ngIf="existing"> 
     <p-table #foodTable [value]="foodTableValues">
         <ng-template pTemplate="header">
         <tr> 
@@ -253,6 +277,10 @@
             </tr>
 </ng-template>
     </p-table>
+    </div>
+    <div *ngIf="new">
+        WIP
+    </div>
 </div>
 </div>
 

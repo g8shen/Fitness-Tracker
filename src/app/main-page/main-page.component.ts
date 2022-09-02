@@ -4,6 +4,7 @@ import { DatePipe } from '@angular/common';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
 import { Table } from 'primeng/table';
 import * as Realm from "realm-web";
+import {ChartModule} from 'primeng/chart';
 
 @Component({
   selector: 'app-main-page',
@@ -11,9 +12,24 @@ import * as Realm from "realm-web";
   styleUrls: ['./main-page.component.css']
 })
 export class MainPageComponent implements OnInit {
-
+  chartData: any;
+  multiAxisOptions: any;
   constructor() { 
+    this.chartData = {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      datasets: [
+          {
+              label: 'Weight',
+              data: this.weightData
+          },
+          {
+              label: 'Calories',
+              data: []
+          },         
+      ]
   }
+  }
+
   filterInput: any 
   today = true
   overview = false
@@ -32,10 +48,8 @@ export class MainPageComponent implements OnInit {
     {NAME: 'Test1', CALORIES: '100', PROTEIN: '30', WEIGHT: ''},
     {NAME: 'Test2', CALORIES: '100', PROTEIN: '40', WEIGHT: ''},
     {NAME: 'Test3', CALORIES: '100', PROTEIN: '50', WEIGHT: ''}
-
   ]
   foodTableCols: any[] = []
-  
   BREAKFAST: any[] = []
   editFoodText = 'Edit'
   LUNCH: any[] = []
@@ -62,7 +76,7 @@ export class MainPageComponent implements OnInit {
   user:any
   @ViewChild("foodTable") foodTable: Table;
   async ngOnInit(): Promise<void> {
-    this.testCases()
+    //this.testCases()
     this.login()
     this.setTabs()
   }
@@ -80,6 +94,7 @@ export class MainPageComponent implements OnInit {
       this.foodTableValues = allFood
       console.log(allFood)
       this.dateTableValues = await this.user.functions['getAllDates']() 
+      this.sortDateVals()
       this.setDate()
     } catch(err) {
       console.error("Failed to log in", err);
@@ -96,11 +111,13 @@ export class MainPageComponent implements OnInit {
     if(dateIndex>-1){
      console.log(this.dateTableValues[dateIndex])
      this.day = this.dateTableValues[dateIndex]
+     if(this.day.WEIGHT!=''){
+      this.editWeightText = 'Edit'
+     }
      this.BREAKFAST = this.day.food.BREAKFAST
      this.LUNCH = this.day.food.LUNCH
      this.DINNER = this.day.food.DINNER
      this.SNACKS = this.day.food.SNACKS
-
      console.log(this.day)
     } else if(dateIndex==-1){
       this.day.DATE = this.formattedDate
@@ -109,7 +126,21 @@ export class MainPageComponent implements OnInit {
       console.log(this.dateTableValues)
     }
     //let formattedDate = datepipe.transform(yourDate, 'dd-MMM-YYYY HH:mm:ss')
+  }
 
+  weightData: any[] = []
+  caloriesData: any[] = []
+  sortDateVals(){
+    while(this.weightData.length!=0){
+      this.weightData.pop()
+    }
+    console.log(this.weightData)
+    console.log(this.dateTableValues)
+    for(let i=0; i <this.dateTableValues.length; i++){
+      this.weightData.push(this.dateTableValues[i].WEIGHT)
+      console.log(this.dateTableValues[i].WEIGHT)
+      //this.caloriesData.push()
+    }
   }
   setTabs(){
     this.foodTableCols = [
@@ -128,12 +159,14 @@ export class MainPageComponent implements OnInit {
 
     ]
   }
+
   insertOne(name:any, foodObject: any){
     console.log(name)
     console.log(foodObject)
     const allFood = this.user.functions['updateFood'](name, foodObject)
     console.log(allFood)
   }
+
   setTab(Tab: any){
     if(Tab == 'Today'){
       this.today = true
@@ -150,7 +183,29 @@ export class MainPageComponent implements OnInit {
       this.overview = false
       this.food = true
     }
+  }
 
+  table = true
+  chart: boolean
+  existing = true
+  new: boolean
+  setSubTab(subTab: any){
+    if(subTab == 'table'){
+      this.table = true
+      this.chart = false
+    }
+    if(subTab == 'chart'){
+      this.table = false
+      this.chart = true
+    }
+    if(subTab == 'existing'){
+      this.existing = true
+      this.new = false
+    }
+    if(subTab == 'new'){
+      this.existing = false
+      this.new = true
+    }
   }
 
   addFoodExisting(name: any, calories: any, protien: any, meal: any, weight: any){
@@ -213,6 +268,7 @@ export class MainPageComponent implements OnInit {
 
   editWeightText = 'Save'
   saveWeight(name: any, dateObject: any){
+    this.sortDateVals()
     console.log(name)
     console.log(dateObject)
     const dates = this.user.functions['updateDate'](name, dateObject)
@@ -231,4 +287,5 @@ export class MainPageComponent implements OnInit {
     const dates = this.user.functions['updateDate'](name, dateObject)
     console.log(dates)
   }
+  
 }
