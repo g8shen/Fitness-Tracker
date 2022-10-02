@@ -24,7 +24,7 @@
     <div class="card">
         <div class="card-header">Today is {{formattedDate}}</div> 
         <div class="card-body">Weight:        
-            <input class="weightInput myInput" *ngIf="editWeightText =='Save'" [(ngModel)]="day.WEIGHT" type="text">     
+            <input class="weightInput myInput" *ngIf="editWeightText =='Save'||day.WEIGHT==''" [(ngModel)]="day.WEIGHT" type="text">     
             <span *ngIf="editWeightText == 'Edit'"> {{day.WEIGHT}} </span>
          
             <button class="myButton" style="margin-left: 5px" (click)="saveWeight(formattedDate, day)"> {{editWeightText}} </button>
@@ -51,7 +51,7 @@
             <div class="card-header">
                 Add:
                 <select [(ngModel)]="addFoodMode">
-                    <option> New </option>
+                    <option disabled> New </option>
                     <option> Existing </option>
                 </select>
                 Total Calories: {{day.CALORIES_TOTAL}}
@@ -69,7 +69,7 @@
                 Name: <input class="myInput" [(ngModel)]="foodObject.NAME" type="text"> 
                 Calories: <input class="myInput" [(ngModel)]="foodObject.CALORIES" type="text"> 
                 Protein: <input class="myInput" [(ngModel)]="foodObject.PROTEIN" type="text">
-                <button class="myButton" style="margin-left: 10px" (click)="addFood(false)"> Add </button> 
+                <button class="myButton" style="margin-left: 10px" (click)="addFood()"> Add </button> 
             </div>
             <!--ADDING EXISTING-->
             <div *ngIf="addFoodMode=='Existing'"class="card-body"> 
@@ -83,7 +83,7 @@
                 </select>
                 <p-table #foodTable [value]="foodTableValues" [globalFilterFields]="['NAME', 'CALORIES', 'PROTEIN']" >
                 <ng-template pTemplate="header"> 
-                    <th *ngFor="let col of foodTableCols | slice:0:4; let i=index"
+                    <th *ngFor="let col of addfoodTableCols | slice:0:4; let i=index"
                     [ngStyle]="{'width': col.width}" [pSortableColumn]="col.searchfield" class="tableHeader"> 
                     {{col.header}}
                     <p-sortIcon [field]="col.searchfield"></p-sortIcon>
@@ -91,7 +91,7 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData>
                     <tr>
-                        <td *ngFor="let col of foodTableCols | slice:0:4; let i = index" [ngStyle]="{'width': col.width}" class="tableRow"> 
+                        <td *ngFor="let col of addfoodTableCols | slice:0:4; let i = index" [ngStyle]="{'width': '25%'}" class="tableRow"> 
                         <span *ngIf="i!=3">{{rowData[col.field]}}</span>
                         <span *ngIf="i==3"> <input class="tableFilterInput" [(ngModel)]="rowData.WEIGHT"> </span>
 
@@ -250,28 +250,28 @@
         <button *ngIf="existing" (click)="setSubTab('existing')" class="subTablinks active" style="margin-left: 20vw">Existing</button>
         <button *ngIf="!existing" (click)="setSubTab('existing')" class="subTablinks" style="margin-left: 20vw">Existing</button>
 
-        <button *ngIf="new" (click)="setSubTab('new')" class="subTablinks active">New</button>
-        <button *ngIf="!new" (click)="setSubTab('new')" class="subTablinks">New</button>
+        <button *ngIf="new" (click)="setSubTab('new')" class="subTablinks active"> Add New</button>
+        <button *ngIf="!new" (click)="setSubTab('new')" class="subTablinks"> Add New</button>
     </div>
     <div *ngIf="existing"> 
     <p-table #foodTable [value]="foodTableValues">
         <ng-template pTemplate="header">
         <tr> 
-        <th *ngFor="let col of foodTableCols | slice:0:3; let i=index"
+        <th *ngFor="let col of foodTableCols | slice:0:6; let i=index"
         [ngStyle]="{'width': col.width}" [pSortableColumn]="col.searchfield" class="tableHeader"> 
         {{col.header}}
         <p-sortIcon [field]="col.searchfield"></p-sortIcon>
     </th>
     </tr>
     <tr>
-    <th *ngFor="let col of foodTableCols | slice:0:3; let i=index" class="tableHeader">
+    <th *ngFor="let col of foodTableCols | slice:0:6; let i=index" class="tableHeader">
         <input type="text" [(ngModel)]="col.inputValue" (input)="foodTable.filter(col.inputValue, col.searchfield, col.filterMatchMode);" class="tableFilterInput">
     </th>
 </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowData>
         <tr>
-            <td *ngFor="let col of foodTableCols | slice:0:3; let i = index" [ngStyle]="{'width': col.width}" class="tableRow"> 
+            <td *ngFor="let col of foodTableCols | slice:0:6; let i = index" [ngStyle]="{'width': col.width}" class="tableRow"> 
            {{rowData[col.field]}}
             </td>
             </tr>
@@ -279,7 +279,25 @@
     </p-table>
     </div>
     <div *ngIf="new">
-        WIP
+        <div class="container">
+            <div style="text-align: center; margin-top: 20px;">Name: <input class="myInput" [(ngModel)]="foodObject.NAME" type="text"> </div>
+            <hr style="width: 50vw">
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-4">
+                <div class="foodRow">  Calories <input class="myRowInput" style="position: absolute; left: 35%; top: 15%" [(ngModel)]="foodObject.CALORIES" type="text"> </div>
+                <div class="foodRow">  Fat <input class="myRowInput" style="position: absolute; left: 35%; top: 45%" [(ngModel)]="foodObject.FAT" type="text"> </div>
+                <div class="foodRow">  Protein <input class="myRowInput" style="position: absolute; left: 35%; top: 75%" [(ngModel)]="foodObject.PROTEIN" type="text"> </div>
+              </div>
+              <div class="col-4">
+                <div class="foodRow"> Sodium <input class="myRowInput" style="position: absolute; left: 35%; top: 15%" [(ngModel)]="foodObject.SODIUM" type="text">  </div>
+                <div class="foodRow"> Potassium <input class="myRowInput" style="position: absolute; left: 35%; top: 45%" [(ngModel)]="foodObject.POTASSIUM" type="text"> </div>
+                <div class="foodRow"> Carbs <input class="myRowInput" style="position: absolute; left: 35%; top: 75%" [(ngModel)]="foodObject.CARBS" type="text"> </div>              
+            </div>
+              <div class="col-2"></div>
+            </div>
+          </div>
+          <div style="text-align: center"><button class="myButton myButton-purple" (click)="insertOne(this.foodObject.NAME,this.foodObject)">Add</button></div>
     </div>
 </div>
 </div>

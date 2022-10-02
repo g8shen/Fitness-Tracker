@@ -38,7 +38,11 @@ export class MainPageComponent implements OnInit {
     MEAL:'',
     NAME: '',
     CALORIES: null,
+    FAT: null,
     PROTEIN: null,
+    SODIUM: null,
+    POTASSIUM: null,
+    CARBS: null,
     EDIT: false
   }
 
@@ -50,6 +54,7 @@ export class MainPageComponent implements OnInit {
     {NAME: 'Test3', CALORIES: '100', PROTEIN: '50', WEIGHT: ''}
   ]
   foodTableCols: any[] = []
+  addfoodTableCols: any[] = []
   BREAKFAST: any[] = []
   editFoodText = 'Edit'
   LUNCH: any[] = []
@@ -142,13 +147,22 @@ export class MainPageComponent implements OnInit {
       //this.caloriesData.push()
     }
   }
+
   setTabs(){
     this.foodTableCols = [
+      { field: 'NAME', searchfield: 'NAME', header: 'Name', width: '16%', filterMatchMode:'contains', inputValue:null}, //0
+      { field: 'CALORIES', searchfield: 'CALORIES', header: 'Calories', width: '16%', filterMatchMode:'contains', inputValue:null}, //1
+      { field: 'PROTEIN', searchfield: 'PROTEIN', header: 'Protein', width: '16%', filterMatchMode:'contains',inputValue:null }, //2
+      { field: 'FAT', searchfield: 'FAT', header: 'Fat', width: '16%', filterMatchMode:'contains',inputValue:null }, //3
+      { field: 'SODIUM', searchfield: 'SODIUM', header: 'Sodium', width: '16%', filterMatchMode:'contains',inputValue:null }, //4
+      { field: 'POTASSIUM', searchfield: 'POTASSIUM', header: 'Potassium', width: '16%', filterMatchMode:'contains',inputValue:null }, //5
+      { field: 'CARBS', searchfield: 'CARBS', header: 'Carbs', width: '16%', filterMatchMode:'contains',inputValue:null }, //6
+    ]
+    this.addfoodTableCols = [
       { field: 'NAME', searchfield: 'NAME', header: 'Name', width: '25%', filterMatchMode:'contains', inputValue:null}, //0
       { field: 'CALORIES', searchfield: 'CALORIES', header: 'Calories', width: '25%', filterMatchMode:'contains', inputValue:null}, //1
-      { field: 'PROTEIN', searchfield: 'PROTEIN', header: 'Protein (g)', width: '25%', filterMatchMode:'contains',inputValue:null }, //2
-      { field: 'WEIGHT', searchfield: 'weight', header: 'Weight (g)', width: '25%', filterMatchMode:'contains',inputValue:null }, //2
-
+      { field: 'PROTEIN', searchfield: 'PROTEIN', header: 'Protein', width: '25%', filterMatchMode:'contains',inputValue:null }, //2
+      { field: 'WEIGHT', searchfield: 'weight', header: 'Weight', width: '25%', filterMatchMode:'contains',inputValue:null }, //3
     ]
     this.dateTableCols = [
       { field: 'DATE', searchfield: 'DATE', header: 'Date', width: '20%', filterMatchMode:'contains', inputValue:null}, //0
@@ -156,15 +170,13 @@ export class MainPageComponent implements OnInit {
       { field: 'CALORIES_TOTAL', searchfield: 'CALORIES_TOTAL', header: 'Total Calories', width: '20%', filterMatchMode:'contains',inputValue:null }, //2
       { field: 'PROTEIN', searchfield: 'PROTEIN', header: 'Protein', width: '20%', filterMatchMode:'contains',inputValue:null }, //2
       { field: 'WORKOUT', searchfield: 'WORKOUT', header: 'Workout', width: '20%', filterMatchMode:'contains',inputValue:null }, //2
-
     ]
   }
 
   insertOne(name:any, foodObject: any){
-    console.log(name)
+    this.foodTableValues.push(JSON.parse(JSON.stringify(this.foodObject)))
     console.log(foodObject)
     const allFood = this.user.functions['updateFood'](name, foodObject)
-    console.log(allFood)
   }
 
   setTab(Tab: any){
@@ -238,11 +250,7 @@ export class MainPageComponent implements OnInit {
     //this.saveDay(this.formattedDate, this.day);
   }
 
-  addFood(save: any){
-    if(save == true){
-      this.insertOne(this.foodObject.NAME,this.foodObject)
-      this.foodTableValues.push(JSON.parse(JSON.stringify(this.foodObject)))
-    }
+  addFood(){
     console.log(this.foodObject)
     console.log(this.foodObject.MEAL)
     if(this.foodObject.MEAL=='Breakfast'){  

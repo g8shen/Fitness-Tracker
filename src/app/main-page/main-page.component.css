@@ -166,6 +166,7 @@ border-top: none;
     border-radius: 8px;
     border: solid #FFA500 
 }
+
 .myButtonWeight{
     position:absolute;
     left: 15%
@@ -175,11 +176,36 @@ border-top: none;
 }
 
 .myInput{
-    border-radius: 8px;
+    border-radius: 0px;
     border: solid 2px rgb(85, 37, 134);
 }
 
 .chart{
     display: flex;
     justify-content: center;
+}
+
+.foodRow{
+    margin-top: 20px
+    
+}
+
+.foodRow{
+    margin-top: 20px
+}
+
+.myRowInput{
+    border-radius: 0px;
+    border: solid 2px rgb(85, 37, 134);
+    width: 150px;
+}
+
+.myButton-purple{
+    margin-top: 20px;
+    width: 100px;
+    background-color: rgb(85, 37, 134) ;
+    color: white;
+    border-radius: 0px;
+    border: solid rgb(85, 37, 134);
+    text-align: center
 }
