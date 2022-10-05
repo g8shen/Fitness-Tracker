@@ -1,5 +1,5 @@
 import { Variable } from '@angular/compiler/src/render3/r3_ast';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input} from '@angular/core';
 import { DatePipe } from '@angular/common';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
 import { Table } from 'primeng/table';
@@ -12,6 +12,7 @@ import {ChartModule} from 'primeng/chart';
   styleUrls: ['./main-page.component.css']
 })
 export class MainPageComponent implements OnInit {
+  @Input() item = ''; 
   chartData: any;
   multiAxisOptions: any;
   constructor() { 
@@ -90,11 +91,13 @@ export class MainPageComponent implements OnInit {
     this.foodTableValues = this.testFoodTableValues
   }
   async login(){
+    console.log(this.item)
     const app = new Realm.App({ id: "application-0-yprqw" });
     const credentials = Realm.Credentials.anonymous();
     try {
       this.user = await app.logIn(credentials);
       console.log('test')
+      //const user = await this.user.functions['verifyLogin']('admin','Welcome123!')
       const allFood = await this.user.functions['getAllFood']()
       this.foodTableValues = allFood
       console.log(allFood)

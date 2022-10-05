@@ -1,0 +1,14 @@
+
+<div *ngIf="loggedIn==false" class="center">
+<div>
+    <span class="myLabel"> Username: </span><input [(ngModel)]="username" class="input">
+</div>
+<div>
+    <span class="myLabel"> Password: </span><input [(ngModel)]="password" type='password' class="input">
+</div>
+<div>
+    <button class="myButton" (click)="login()"> Login </button>
+</div>
+</div>
+
+<app-main-page *ngIf="loggedIn==true" [item]="this.userId"></app-main-page>

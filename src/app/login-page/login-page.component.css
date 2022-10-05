@@ -1,0 +1,32 @@
+.center {
+    font-size: 30px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    }
+    
+.input{
+    border-radius: 0px;
+    border: solid 2px rgb(85, 37, 134);
+    width: 150px;
+    height: 30px;
+    margin-left: 150px;
+    margin-top: 20px;
+    font-size: 20px
+}
+
+.myButton{
+    margin-top: 20px;
+    font-size: 20px;
+    background-color: #FFA500 ;
+    color: black;
+    border-radius: 8px;
+    border: solid #FFA500 
+}
+
+.myLabel{
+    margin-top: 20px;
+    position: absolute;
+    left : 0%
+}

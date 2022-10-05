@@ -9,12 +9,14 @@ import { MainPageComponent } from './main-page/main-page.component';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {ChartModule} from 'primeng/chart';
+import { LoginPageComponent } from './login-page/login-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    MainPageComponent
+    MainPageComponent,
+    LoginPageComponent
   ],
   imports: [
     BrowserModule,
