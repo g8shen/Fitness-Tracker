@@ -75,6 +75,7 @@ export class MainPageComponent implements OnInit {
     CALORIES_TOTAL: 0,
     PROTEIN: 0,
     WORKOUT: '',
+    USERID: '',
   }
   date: any
   formattedDate: any
@@ -92,6 +93,8 @@ export class MainPageComponent implements OnInit {
   }
   async login(){
     console.log(this.item)
+    this.day.USERID = this.item
+    console.log(this.day)
     const app = new Realm.App({ id: "application-0-yprqw" });
     const credentials = Realm.Credentials.anonymous();
     try {
@@ -101,7 +104,7 @@ export class MainPageComponent implements OnInit {
       const allFood = await this.user.functions['getAllFood']()
       this.foodTableValues = allFood
       console.log(allFood)
-      this.dateTableValues = await this.user.functions['getAllDates']() 
+      this.dateTableValues = await this.user.functions['getAllDates'](this.item) 
       this.sortDateVals()
       this.setDate()
     } catch(err) {
@@ -129,6 +132,7 @@ export class MainPageComponent implements OnInit {
      console.log(this.day)
     } else if(dateIndex==-1){
       this.day.DATE = this.formattedDate
+      this.day.USERID = this.item
       this.dateTableValues.push(this.day)
       await this.user.functions['addDate'](this.day); 
       console.log(this.dateTableValues)
@@ -251,6 +255,7 @@ export class MainPageComponent implements OnInit {
     this.day.CALORIES_TOTAL = this.day.CALORIES_TOTAL + Number(existingFoodObject.CALORIES) * weight
     this.day.PROTEIN = this.day.PROTEIN + Number(existingFoodObject.PROTEIN) * weight
     //this.saveDay(this.formattedDate, this.day);
+    this.saveDay(this.formattedDate, this.day)
   }
 
   addFood(){
@@ -279,13 +284,14 @@ export class MainPageComponent implements OnInit {
 
   editWeightText = 'Save'
   saveWeight(name: any, dateObject: any){
-    this.sortDateVals()
-    console.log(name)
-    console.log(dateObject)
-    const dates = this.user.functions['updateDate'](name, dateObject)
-    console.log(dates)
     //console.log(this.editWeightText)
     if(this.editWeightText == 'Save'){
+      this.sortDateVals()
+      console.log(name)
+      console.log(dateObject)
+      console.log(this.day)
+      const dates = this.user.functions['updateDate'](name, dateObject)
+      console.log(dates)
       this.editWeightText = 'Edit'
     }
     else if(this.editWeightText == 'Edit'){
