@@ -10,5 +10,5 @@
     <button class="myButton" (click)="login()"> Login </button>
 </div>
 </div>
-
+<div *ngIf="loggedIn==true" style="text-align: right"> <button class="myButton myButton-logout" (click)="logOut()"> Log Out</button></div>
 <app-main-page *ngIf="loggedIn==true" [item]="this.userId"></app-main-page>

@@ -12,7 +12,7 @@ export class LoginPageComponent implements OnInit {
   password: string
   user: any
   loginResults: any
-  userId: any = ''
+  userId: any = null
   loggedIn = false
   constructor() { }
 
@@ -37,6 +37,11 @@ export class LoginPageComponent implements OnInit {
         this.userId = loginResults[0].id
         this.loggedIn = true
     }
+  }
+
+  logOut(){
+    this.loggedIn = false
+    this.userId = null
   }
 
 }
