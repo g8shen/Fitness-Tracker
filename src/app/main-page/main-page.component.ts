@@ -252,8 +252,8 @@ export class MainPageComponent implements OnInit {
     if(this.foodObject.MEAL=='Snacks'){  
       this.SNACKS.push(JSON.parse(JSON.stringify(existingFoodObject)))
     }
-    this.day.CALORIES_TOTAL = this.day.CALORIES_TOTAL + Number(existingFoodObject.CALORIES) * weight
-    this.day.PROTEIN = this.day.PROTEIN + Number(existingFoodObject.PROTEIN) * weight
+    this.day.CALORIES_TOTAL = this.day.CALORIES_TOTAL + Number(existingFoodObject.CALORIES)
+    this.day.PROTEIN = this.day.PROTEIN + Number(existingFoodObject.PROTEIN) 
     //this.saveDay(this.formattedDate, this.day);
     this.saveDay(this.formattedDate, this.day)
   }
