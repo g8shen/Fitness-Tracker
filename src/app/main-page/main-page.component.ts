@@ -17,7 +17,7 @@ export class MainPageComponent implements OnInit {
   multiAxisOptions: any;
   constructor() { 
     this.chartData = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      labels: this.datesData,
       datasets: [
           {
               label: 'Weight',
@@ -83,7 +83,7 @@ export class MainPageComponent implements OnInit {
   user:any
   @ViewChild("foodTable") foodTable: Table;
   async ngOnInit(): Promise<void> {
-    //this.testCases()
+    this.testCases()
     this.login()
     this.setTabs()
   }
@@ -107,6 +107,7 @@ export class MainPageComponent implements OnInit {
       this.dateTableValues = await this.user.functions['getAllDates'](this.item) 
       this.sortDateVals()
       this.setDate()
+      //this.seedTestDates()
     } catch(err) {
       console.error("Failed to log in", err);
     }
@@ -141,6 +142,7 @@ export class MainPageComponent implements OnInit {
   }
 
   weightData: any[] = []
+  datesData: any[] = []
   caloriesData: any[] = []
   sortDateVals(){
     while(this.weightData.length!=0){
@@ -150,9 +152,13 @@ export class MainPageComponent implements OnInit {
     console.log(this.dateTableValues)
     for(let i=0; i <this.dateTableValues.length; i++){
       this.weightData.push(this.dateTableValues[i].WEIGHT)
-      console.log(this.dateTableValues[i].WEIGHT)
+      console.log(this.dateTableValues[i].DATE)
       //this.caloriesData.push()
     }
+    for(let i=0; i <this.dateTableValues.length; i++){
+      this.datesData.push(this.dateTableValues[i].DATE)
+    }
+    console.log(this.datesData)
   }
 
   setTabs(){
@@ -305,4 +311,43 @@ export class MainPageComponent implements OnInit {
     console.log(dates)
   }
   
+  //TEST DATA DATABASE SEEDING
+  testDay = {
+    DATE: '1-Jan-2022',
+    WEIGHT: 0,
+    food : {
+      BREAKFAST: this.BREAKFAST,
+      LUNCH: this.LUNCH,
+      DINNER: this.DINNER,
+      SNACKS : this.SNACKS,
+    },
+    CALORIES_TOTAL: 0,
+    PROTEIN: 0,
+    WORKOUT: '',
+    USERID: '',
+  }
+
+  getRandomInt(min: any, max: any) { 
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min)
+  }
+
+  async seedTestDates(){
+    var weight = 100
+    for(let i = 1; i < 30; i ++){
+      this.testDay.DATE = i.toString() + '-Oct-2022'
+      this.testDay.USERID = this.item
+      if(Math.random() > 0.5){
+        this.testDay.WEIGHT = weight + this.getRandomInt(1,5)
+      } else {
+        this.testDay.WEIGHT = weight - this.getRandomInt(1,5)
+      }
+      weight = this.testDay.WEIGHT
+      this.testDay.CALORIES_TOTAL = this.getRandomInt(1000, 2000)
+      this.testDay.PROTEIN = this.getRandomInt(1000, 2000)
+      console.log(weight)
+      await this.user.functions['addDate'](this.testDay); 
+    }
+  }
 }
