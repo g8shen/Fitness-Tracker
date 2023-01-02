@@ -148,6 +148,9 @@ export class MainPageComponent implements OnInit {
     while(this.weightData.length!=0){
       this.weightData.pop()
     }
+    while(this.datesData.length!=0){
+      this.datesData.pop()
+    }
     console.log(this.weightData)
     console.log(this.dateTableValues)
     for(let i=0; i <this.dateTableValues.length; i++){
