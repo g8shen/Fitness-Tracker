@@ -86,9 +86,9 @@ export class MainPageComponent implements OnInit {
     this.testCases()
     this.login()
     this.setTabs()
-    // setInterval(() => {
-    //   this.mockUpdate();
-    // }, 10000);
+    setInterval(() => {
+      this.mockUpdate();
+    }, 10000);
   }
 
   testCases(){
@@ -361,8 +361,10 @@ export class MainPageComponent implements OnInit {
     var object = {NAME: 'Test', CALORIES: '100', PROTEIN: '20', WEIGHT: ''}
     this.foodTableValues.push(object)
     this.foodTableValues.shift()
+
     this.foodTableValues[2].NAME = "Change"
     this.foodTableValues = [...this.foodTableValues]
+    
   }
 
 }
